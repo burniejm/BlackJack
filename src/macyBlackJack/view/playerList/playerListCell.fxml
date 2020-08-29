@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="152.0" prefWidth="842.0" style="-fx-background-color: rgba(255, 255, 255, .6);" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox layoutX="200.0" prefHeight="180.0" prefWidth="841.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" style="-fx-padding: 5px;">
+               <children>
+                  <TextField fx:id="txtPlayerName" />
+                  <Label fx:id="lblBank" text="Bank">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="35.0" prefWidth="83.0">
+                     <children>
+                        <Label fx:id="lblDollarSign" text="\$">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblPlayerBank" text="Label">
+                           <font>
+                              <Font name="System Bold Italic" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Button fx:id="btnLeaveTable" mnemonicParsing="false" text="Leave Table" />
+               </children>
+            </VBox>
+            <VBox prefHeight="180.0" prefWidth="629.0" style="-fx-padding: 5px;">
+               <children>
+                  <ListView fx:id="listViewCards" orientation="HORIZONTAL" prefHeight="106.0" prefWidth="619.0" style="-fx-background-color: darkGreen;" styleClass="cards-list-view" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="400.0" style="-fx-padding: 5px;">
+                     <children>
+                        <HBox fx:id="paneBetControls" prefHeight="27.0" prefWidth="249.0">
+                           <children>
+                              <Label prefHeight="23.0" prefWidth="108.0" text="Current Bet: $">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblCurrentBet" prefHeight="23.0" prefWidth="57.0" text="BET">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <HBox prefHeight="27.0" prefWidth="79.0" spacing="5.0">
+                                 <children>
+                                    <Button fx:id="btnDecrementBet" mnemonicParsing="false" text="-" />
+                                    <Button fx:id="btnIncrementBet" mnemonicParsing="false" text="+" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                        <HBox fx:id="paneScore" alignment="CENTER_RIGHT" prefHeight="27.0" prefWidth="366.0">
+                           <children>
+                              <Label fx:id="lblScoreTitle" text="Hand Score:">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblScore" text="Score">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children></HBox>
+               </children>
+            </VBox>
+            <VBox fx:id="paneHandControls" prefHeight="180.0" prefWidth="114.0" spacing="4.0" style="-fx-padding: 5px;">
+               <children>
+                  <Button fx:id="btnHit" mnemonicParsing="false" style="-fx-margin: 5px;" text="Hit" />
+                  <Button fx:id="btnStand" mnemonicParsing="false" text="Stand" />
+                  <Label fx:id="lblHandResult" prefHeight="17.0" prefWidth="199.0" text="Hand Result">
+                     <VBox.margin>
+                        <Insets top="28.0" />
+                     </VBox.margin></Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
