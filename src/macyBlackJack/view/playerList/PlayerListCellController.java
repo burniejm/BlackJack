@@ -1,7 +1,5 @@
 package macyBlackJack.view.playerList;
 
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -24,10 +22,10 @@ public class PlayerListCellController extends ListCell<Player> {
     private TextField txtPlayerName;
 
     @FXML
-    private Label lblBank;
+    private Pane paneBankControls;
 
     @FXML
-    private Label lblDollarSign;
+    private Label lblBank;
 
     @FXML
     private Label lblPlayerBank;
@@ -70,11 +68,6 @@ public class PlayerListCellController extends ListCell<Player> {
     private GamePresenter presenter;
     private FXMLLoader loader;
 
-    private ListChangeListener cardListChangeListener;
-    private ChangeListener gameInProgressChangeListener;
-    private ChangeListener turnChangeListener;
-    private boolean listenersAdded;
-
     public PlayerListCellController(GamePresenter presenter) {
         this.presenter = presenter;
     }
@@ -98,17 +91,16 @@ public class PlayerListCellController extends ListCell<Player> {
                 }
             }
 
+            txtPlayerName.setEditable(false);
+            txtPlayerName.setFocusTraversable(false);
+
             if(player.isDealer()) {
-                txtPlayerName.setEditable(false);
-                txtPlayerName.setFocusTraversable(false);
-                lblDollarSign.setVisible(false);
-                lblBank.setVisible(false);
-                lblPlayerBank.setVisible(false);
+                paneBankControls.setVisible(false);
             }
 
             lblHandResult.setVisible(false);
 
-            listViewCards.setCellFactory(param -> new CardListCellController(player.isDealer(), presenter.getGameViewModel().getGameInProgressProperty()));
+            listViewCards.setCellFactory(param -> new CardListCellController(player.isDealer(), presenter.getGameModel().getGameInProgressProperty()));
             listViewCards.setItems(player.getCurrentHand().getCards());
             listViewCards.setSelectionModel(new NoSelectionModel<>());
             listViewCards.setFocusTraversable(false);
@@ -119,34 +111,14 @@ public class PlayerListCellController extends ListCell<Player> {
             btnIncrementBet.setOnAction(event -> presenter.incrementBetPressed(player));
             btnLeaveTable.setOnAction(event -> btnLeaveTablePressed(player));
 
-            //TODO: try moving all listeners to somewhere else
-
-            if(!listenersAdded) {
-                cardListChangeListener = c -> evaluateControlsState(player);
-                player.getCurrentHand().getCards().addListener(cardListChangeListener);
-
-                txtPlayerName.textProperty().bindBidirectional(player.getNameProperty());
-                lblPlayerBank.textProperty().bind(player.getBankProperty().asString());
-                lblScore.textProperty().bind(player.getCurrentHand().getCurrentScoreProperty().asString());
-                lblCurrentBet.textProperty().bind(player.getCurrentBetProperty().asString());
-
-                gameInProgressChangeListener = (observable, oldValue, newValue) -> {
-                    updateHandResult(player);
-                    updateCurrentPlayer(player);
-                    listViewCards.refresh();
-                };
-                presenter.getGameViewModel().getGameInProgressProperty().addListener(gameInProgressChangeListener);
-
-                turnChangeListener = (observable, oldValue, newValue) -> {
-                    evaluateControlsState(player);
-                    updateCurrentPlayer(player);
-                };
-                presenter.getGameViewModel().getCurrentTurnProperty().addListener(turnChangeListener);
-
-                listenersAdded = true;
-            }
+            txtPlayerName.setText(player.getPlayerName());
+            lblPlayerBank.textProperty().set(String.valueOf(player.getPlayerBank()));
+            lblScore.textProperty().set(player.getCurrentHand().getCurrentScoreProperty().asString().get());
+            lblCurrentBet.textProperty().set(String.valueOf(player.getPlayerBet()));
 
             evaluateControlsState(player);
+            updateHandResult(player);
+            updateCurrentPlayer(player);
 
             setText(null);
             setGraphic(anchorPane);
@@ -154,49 +126,52 @@ public class PlayerListCellController extends ListCell<Player> {
     }
 
     private void btnLeaveTablePressed(Player player) {
-        removeListeners(player);
         presenter.leaveTablePressed(player);
     }
 
-    private void removeListeners(Player player) {
-        player.getCurrentHand().getCards().removeListener(cardListChangeListener);
-        txtPlayerName.textProperty().unbindBidirectional(player.getNameProperty());
-        lblPlayerBank.textProperty().unbind();
-        lblScore.textProperty().unbind();
-        lblCurrentBet.textProperty().unbind();
-        presenter.getGameViewModel().getGameInProgressProperty().removeListener(gameInProgressChangeListener);
-        presenter.getGameViewModel().getCurrentTurnProperty().removeListener(turnChangeListener);
+    private void resetControls() {
+        btnHit.setVisible(true);
+        btnStand.setVisible(true);
+        btnLeaveTable.setVisible(true);
+        btnDecrementBet.setVisible(true);
+        btnIncrementBet.setVisible(true);
+        paneBetControls.setVisible(true);
+        paneBankControls.setVisible(true);
 
-        listenersAdded = false;
+        btnHit.setDisable(false);
+        btnStand.setDisable(false);
+        btnLeaveTable.setDisable(false);
+        btnDecrementBet.setDisable(false);
+        btnIncrementBet.setDisable(false);
+        btnLeaveTable.setDisable(false);
     }
 
     private void evaluateControlsState(Player player) {
-        btnHit.setDisable(false);
-        btnStand.setDisable(false);
+        resetControls();
+
+        lblScoreTitle.setVisible(player.getCurrentHand().getCurrentScoreProperty().get() != 0);
         lblScore.setVisible(player.getCurrentHand().getCurrentScoreProperty().get() != 0);
-        lblScore.setVisible(player.getCurrentHand().getCurrentScoreProperty().get() != 0);
-        btnIncrementBet.setDisable(false);
-        btnDecrementBet.setDisable(false);
-        btnLeaveTable.setDisable(false);
 
         if(player.isDealer()) {
             btnHit.setVisible(false);
             btnStand.setVisible(false);
             btnLeaveTable.setVisible(false);
             paneBetControls.setVisible(false);
+            paneBankControls.setVisible(false);
 
-            if(presenter.getGameViewModel().getGameInProgressProperty().get()) {
+            if(presenter.getGameModel().getGameInProgressProperty().get()) {
+                lblScoreTitle.setVisible(false);
                 lblScore.setVisible(false);
             }
         }
 
-        if(presenter.getGameViewModel().getGameInProgressProperty().get()) {
+        if(presenter.getGameModel().getGameInProgressProperty().get()) {
             btnIncrementBet.setDisable(true);
             btnDecrementBet.setDisable(true);
             btnLeaveTable.setDisable(true);
         }
 
-        if(!presenter.isPlayersTurn(player) || !presenter.getGameViewModel().getGameInProgressProperty().get()) {
+        if(!presenter.isPlayersTurn(player) || !presenter.getGameModel().getGameInProgressProperty().get()) {
             btnHit.setDisable(true);
             btnStand.setDisable(true);
             return;
@@ -220,8 +195,12 @@ public class PlayerListCellController extends ListCell<Player> {
     }
 
     private void updateHandResult(Player player) {
-        if(presenter.getGameViewModel().getGameInProgressProperty().get()) {
+        if(presenter.getGameModel().getGameInProgressProperty().get()) {
             lblHandResult.setVisible(false);
+            return;
+        }
+
+        if(player.getCurrentHand().getCards().size() == 0) {
             return;
         }
 
@@ -235,7 +214,7 @@ public class PlayerListCellController extends ListCell<Player> {
     }
 
     private void updateCurrentPlayer(Player player) {
-        if(presenter.isPlayersTurn(player) || !presenter.getGameViewModel().getGameInProgressProperty().get()) {
+        if(presenter.isPlayersTurn(player) || !presenter.getGameModel().getGameInProgressProperty().get()) {
             anchorPane.disableProperty().set(false);
         } else {
             anchorPane.disableProperty().set(true);

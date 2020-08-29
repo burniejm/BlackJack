@@ -1,24 +1,22 @@
 package macyBlackJack.model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class Player {
 
-    private StringProperty nameProperty = new SimpleStringProperty("");
-    private IntegerProperty bankProperty = new SimpleIntegerProperty(RuleSet.STARTING_BANK);
-    private IntegerProperty currentBetProperty = new SimpleIntegerProperty(RuleSet.MIN_BET);
+    private String playerName = "";
+    private int playerBank = RuleSet.STARTING_BANK;
+    private int playerBet = RuleSet.MIN_BET;
     private Hand currentHand;
     private boolean isDealer;
 
-    public StringProperty getNameProperty() { return nameProperty; }
-    public IntegerProperty getBankProperty() { return bankProperty; }
-    public IntegerProperty getCurrentBetProperty() { return currentBetProperty; }
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String name) { playerName = name; }
+    public int getPlayerBank() { return playerBank; }
+    public void setPlayerBank(int bank) { playerBank = bank; }
+    public int getPlayerBet() { return playerBet; }
+    public void setPlayerBet(int bet) { playerBet = bet; }
 
     public Player(String name, boolean isDealer){
-        this.nameProperty.setValue(name);
+        this.playerName = name;
         this.isDealer = isDealer;
         this.currentHand = new Hand();
     }
@@ -32,6 +30,6 @@ public class Player {
     }
 
     public boolean canAffordToPlay() {
-        return getBankProperty().get() > 0;
+        return playerBank > 0 || isDealer;
     }
 }

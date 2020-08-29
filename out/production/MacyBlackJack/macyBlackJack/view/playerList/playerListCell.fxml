@@ -15,25 +15,29 @@
             <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" style="-fx-padding: 5px;">
                <children>
                   <TextField fx:id="txtPlayerName" />
-                  <Label fx:id="lblBank" text="Bank">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <HBox prefHeight="35.0" prefWidth="83.0">
+                  <VBox fx:id="paneBankControls" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label fx:id="lblDollarSign" text="\$">
+                        <Label fx:id="lblBank" text="Bank">
                            <font>
-                              <Font size="18.0" />
+                              <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lblPlayerBank" text="Label">
-                           <font>
-                              <Font name="System Bold Italic" size="18.0" />
-                           </font>
-                        </Label>
+                        <HBox prefHeight="35.0" prefWidth="83.0">
+                           <children>
+                              <Label text="\$">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lblPlayerBank" text="Label">
+                                 <font>
+                                    <Font name="System Bold Italic" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
-                  </HBox>
+                  </VBox>
                   <Button fx:id="btnLeaveTable" mnemonicParsing="false" text="Leave Table" />
                </children>
             </VBox>

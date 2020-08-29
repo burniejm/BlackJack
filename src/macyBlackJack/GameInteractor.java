@@ -7,14 +7,12 @@ import java.util.ArrayList;
 public class GameInteractor {
 
     private Game game;
-    private GamePresenter presenter;
 
-    public GameInteractor(GamePresenter presenter) {
-        this.presenter = presenter;
-        this.game = presenter.getGameViewModel();
+    public GameInteractor(Game game) {
+        this.game = game;
 
         game.getCurrentTurnProperty().addListener((observable, oldValue, newValue) -> {
-            if(presenter.getGameViewModel().getCurrentTurnProperty().get() == 0) {
+            if(game.getCurrentTurnProperty().get() == 0) {
                 performDealersTurn();
                 determineWinners();
                 checkBets();
@@ -26,7 +24,8 @@ public class GameInteractor {
 
     public void addPlayer() {
         if(game.getPlayersProperty().size() < RuleSet.MAX_PLAYERS_INCLUDING_DEALER) {
-            game.addPlayer(new Player("New Player", false));
+            String playerName = "Player " + game.getPlayersProperty().size();
+            game.addPlayer(new Player(playerName, false));
         }
     }
 
@@ -34,11 +33,19 @@ public class GameInteractor {
         if(!player.isDealer()) {
             game.removePlayer(player);
         }
+
+        renamePlayers();
     }
 
     public void dealNewHand() {
         resetPlayersHands();
-        game.getCurrentTurnProperty().set(1);
+
+        Player firstPlayer = firstPlayablePlayer();
+        if(firstPlayer != null) {
+            game.getCurrentTurnProperty().set(game.getPlayersProperty().indexOf(firstPlayer));
+        } else {
+            game.getCurrentTurnProperty().set(0);
+        }
         game.getGameInProgressProperty().set(true);
 
         //Create temp list and move dealer to the end (dealer deals to himself after all other players)
@@ -48,15 +55,18 @@ public class GameInteractor {
 
         for(int i = 0; i < RuleSet.NUM_STARTING_CARDS; i++) {
             for (Player player : orderedPlayers) {
-                if(player.canAffordToPlay() || player.isDealer()) {
-                    player.getCurrentHand().addCard(getNextCard());
+                if(player.canAffordToPlay()) {
+                    dealCard(player);
                 }
             }
         }
     }
 
     public void dealCard(Player player) {
-        player.getCurrentHand().addCard(getNextCard());
+        PlayingCard nextCard = getNextCard();
+        if(nextCard != null) {
+            player.getCurrentHand().addCard(nextCard);
+        }
 
         if(player.getCurrentHand().isBust()) {
             nextTurn();
@@ -68,14 +78,14 @@ public class GameInteractor {
     }
 
     public void decrementBet(Player player) {
-        if(player.getCurrentBetProperty().get() > RuleSet.MIN_BET) {
-            player.getCurrentBetProperty().set(player.getCurrentBetProperty().get() - RuleSet.BET_INCREMENT);
+        if(player.getPlayerBet() > RuleSet.MIN_BET) {
+            player.setPlayerBet(player.getPlayerBet() - RuleSet.BET_INCREMENT);
         }
     }
 
     public void incrementBet(Player player) {
-        if(player.getCurrentBetProperty().get() < RuleSet.MAX_BET && player.getCurrentBetProperty().get() < player.getBankProperty().get()) {
-            player.getCurrentBetProperty().set(player.getCurrentBetProperty().get() + RuleSet.BET_INCREMENT);
+        if(player.getPlayerBet() < RuleSet.MAX_BET && player.getPlayerBet() < player.getPlayerBank()) {
+            player.setPlayerBet(player.getPlayerBet() + RuleSet.BET_INCREMENT);
         }
     }
 
@@ -84,6 +94,36 @@ public class GameInteractor {
             game.getCurrentTurnProperty().setValue(0);
         } else {
             game.getCurrentTurnProperty().setValue(game.getCurrentTurnProperty().get() + 1);
+
+            //Skip players who are out of money
+            if(!game.getPlayersProperty().get(game.getCurrentTurnProperty().get()).canAffordToPlay()) {
+                nextTurn();
+            }
+        }
+    }
+
+    private Player firstPlayablePlayer() {
+        for(Player player : game.getPlayersProperty()) {
+            if(player.isDealer()) {
+                continue;
+            }
+
+            if(player.canAffordToPlay()) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    private void renamePlayers() {
+        for(int i = 0; i < game.getPlayersProperty().size(); i++) {
+            if(i == 0) {
+                continue;
+            }
+
+            String playerName = "Player " + i;
+            game.getPlayersProperty().get(i).setPlayerName(playerName);
         }
     }
 
@@ -95,15 +135,14 @@ public class GameInteractor {
 
     private void checkBets() {
         for(Player player : game.getPlayersProperty()) {
-            if(player.getCurrentBetProperty().get() > player.getBankProperty().get()) {
-                player.getCurrentBetProperty().set(player.getBankProperty().get());
+            if(player.getPlayerBet() > player.getPlayerBank()) {
+                player.setPlayerBet(player.getPlayerBank());
             }
         }
     }
 
     private PlayingCard getNextCard() {
         if(this.game.getShoe().getCards().size() == 0) {
-            //TODO: handle error
             return null;
         }
 
@@ -162,8 +201,8 @@ public class GameInteractor {
     }
 
     private void handlePayout(Player player) {
-        int playerBet = player.getCurrentBetProperty().get();
-        int playerBank = player.getBankProperty().get();
+        int playerBet = player.getPlayerBet();
+        int playerBank = player.getPlayerBank();
 
         switch (player.getCurrentHand().getHandResult()) {
             case TIE:
@@ -173,16 +212,16 @@ public class GameInteractor {
             case WIN:
                 if(player.getCurrentHand().isBlackJack()) {
                     //Blackjack pays bet * multiplier
-                    player.getBankProperty().set(playerBank + (RuleSet.BLACKJACK_WIN_MULTIPLIER * playerBet));
+                    player.setPlayerBank(playerBank + (RuleSet.BLACKJACK_WIN_MULTIPLIER * playerBet));
                 } else {
                     //Win pays bet
-                    player.getBankProperty().set(playerBank + playerBet);
+                    player.setPlayerBank(playerBank + playerBet);
                 }
                 break;
 
             case LOSS:
                 //Loss subtracts bet from bank
-                player.getBankProperty().set(playerBank - playerBet);
+                player.setPlayerBank(playerBank - playerBet);
                 break;
         }
     }

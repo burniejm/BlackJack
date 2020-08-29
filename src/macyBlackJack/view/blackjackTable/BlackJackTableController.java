@@ -4,7 +4,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -13,15 +12,11 @@ import javafx.scene.layout.AnchorPane;
 import macyBlackJack.GamePresenter;
 import macyBlackJack.Main;
 import macyBlackJack.model.Player;
-import macyBlackJack.model.PlayingCard;
 import macyBlackJack.model.RuleSet;
 import macyBlackJack.view.NoSelectionModel;
 import macyBlackJack.view.playerList.PlayerListCellController;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class BlackJackTableController implements Initializable {
+public class BlackJackTableController {
 
     private GamePresenter presenter;
 
@@ -40,11 +35,6 @@ public class BlackJackTableController implements Initializable {
     @FXML
     AnchorPane anchorPane;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
-
     public void configure(GamePresenter presenter) {
         this.presenter = presenter;
 
@@ -55,18 +45,18 @@ public class BlackJackTableController implements Initializable {
         btnDeal.setOnAction(event -> presenter.dealHandPressed());
 
         listViewPlayers.setCellFactory(playerListView -> new PlayerListCellController(presenter));
-        listViewPlayers.setItems(presenter.getGameViewModel().getPlayersProperty());
+        listViewPlayers.setItems(presenter.getGameModel().getPlayersProperty());
         listViewPlayers.getStyleClass().add("player-list");
         listViewPlayers.setSelectionModel(new NoSelectionModel<>());
 
         updateStatusLabel();
 
-        presenter.getGameViewModel().getPlayersProperty().addListener((ListChangeListener<Player>) c -> {
+        presenter.getGameModel().getPlayersProperty().addListener((ListChangeListener<Player>) c -> {
             evaluateButtonsEnabled();
             listViewPlayers.refresh();
         });
 
-        presenter.getGameViewModel().getGameInProgressProperty().addListener(new ChangeListener<Boolean>() {
+        presenter.getGameModel().getGameInProgressProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 updateStatusLabel();
@@ -74,7 +64,7 @@ public class BlackJackTableController implements Initializable {
             }
         });
 
-        presenter.getGameViewModel().getCurrentTurnProperty().addListener(new ChangeListener<Number>() {
+        presenter.getGameModel().getCurrentTurnProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 updateStatusLabel();
@@ -82,16 +72,20 @@ public class BlackJackTableController implements Initializable {
         });
     }
 
+    public void refreshUI() {
+        listViewPlayers.refresh();
+    }
+
     private void evaluateButtonsEnabled() {
-        boolean gameInProgress = presenter.getGameViewModel().getGameInProgressProperty().get();
-        btnAddPlayer.setDisable(gameInProgress || presenter.getGameViewModel().getPlayersProperty().size() == RuleSet.MAX_PLAYERS_INCLUDING_DEALER);
-        btnDeal.setDisable(gameInProgress || presenter.getGameViewModel().getPlayersProperty().size() < RuleSet.MIN_PLAYERS_INCLUDING_DEALER);
+        boolean gameInProgress = presenter.getGameModel().getGameInProgressProperty().get();
+        btnAddPlayer.setDisable(gameInProgress || presenter.getGameModel().getPlayersProperty().size() == RuleSet.MAX_PLAYERS_INCLUDING_DEALER);
+        btnDeal.setDisable(gameInProgress || (presenter.getGameModel().getPlayersProperty().size() < RuleSet.MIN_PLAYERS_INCLUDING_DEALER || !presenter.gameHasPlayablePlayers()));
     }
 
     private void updateStatusLabel() {
-        if(presenter.getGameViewModel().getGameInProgressProperty().get()) {
+        if(presenter.getGameModel().getGameInProgressProperty().get()) {
             //show whose turn it is
-            String playerName = presenter.getGameViewModel().getPlayersProperty().get(presenter.getGameViewModel().getCurrentTurnProperty().get()).getNameProperty().get();
+            String playerName = presenter.getGameModel().getPlayersProperty().get(presenter.getGameModel().getCurrentTurnProperty().get()).getPlayerName();
             lblStatus.setText("Current Turn: " + playerName);
         } else {
             lblStatus.setText("");

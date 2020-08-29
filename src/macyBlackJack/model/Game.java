@@ -2,7 +2,6 @@ package macyBlackJack.model;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
@@ -26,14 +25,13 @@ public class Game {
     public BooleanProperty getGameInProgressProperty() {
         return gameInProgressProperty;
     }
+    public Shoe getShoe() {
+        return this.shoe;
+    }
 
     public void resetShoe() {
         shoe = new Shoe(RuleSet.NUM_DECKS);
         shuffleShoe(RuleSet.NUM_SHUFFLES);
-    }
-
-    public Shoe getShoe() {
-        return this.shoe;
     }
 
     public void addPlayer(Player player) {

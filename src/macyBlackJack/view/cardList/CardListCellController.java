@@ -4,11 +4,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import macyBlackJack.GameImageCache;
 import macyBlackJack.model.PlayingCard;
-
 
 import java.io.IOException;
 
@@ -24,8 +23,6 @@ public class CardListCellController extends ListCell<PlayingCard> {
 
     private boolean hideFirstCard;
     private BooleanProperty gameInProgressProperty;
-    private String imagePath;
-    private final String FLIPPED_IMAGE_PATH = "/images/Red_back.jpg";
 
     public CardListCellController(boolean hideFirstCard, BooleanProperty gameInProgressProperty) {
         this.hideFirstCard = hideFirstCard;
@@ -51,12 +48,10 @@ public class CardListCellController extends ListCell<PlayingCard> {
                 }
             }
 
-            imagePath = "/images/" + playingCard.getShortName() + ".jpg";
-
             if(hideFirstCard && getIndex() == 0 && gameInProgressProperty.get()) {
                 loadBackCardImage();
             } else {
-                loadCardImage();
+                loadCardImage(playingCard.getShortName());
             }
 
             setText(null);
@@ -64,13 +59,11 @@ public class CardListCellController extends ListCell<PlayingCard> {
         }
     }
 
-    private void loadCardImage() {
-        Image image = new Image(imagePath);
-        imgCard.setImage(image);
+    private void loadCardImage(String cardName) {
+        imgCard.setImage(GameImageCache.getInstance().getCachedImage(cardName));
     }
 
     private void loadBackCardImage() {
-        Image image = new Image(FLIPPED_IMAGE_PATH);
-        imgCard.setImage(image);
+        imgCard.setImage(GameImageCache.getInstance().getCachedImage(GameImageCache.BACK_IMAGE_KEY));
     }
 }

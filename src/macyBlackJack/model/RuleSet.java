@@ -13,7 +13,6 @@ public class RuleSet {
     public final static int MAX_PLAYERS_INCLUDING_DEALER = 4;
     public final static int ACE_HIGH_VALUE = 11;
     public final static int ACE_LOW_VALUE = 1;
-
     public final static int MIN_BET = 5;
     public final static int MAX_BET = 100;
     public final static int STARTING_BANK = 50;
