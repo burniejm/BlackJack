@@ -15,7 +15,7 @@ public enum PlayingCardType{
     HJ(10, "HJ"),
     HQ(10, "HQ"),
     HK(10, "HK"),
-    HA(RuleSet.ACE_HIGH_VALUE, "HA"),
+    HA(GameConstants.ACE_HIGH_VALUE, "HA"),
     D2(2, "D2"),
     D3(3, "D3"),
     D4(4, "D4"),
@@ -28,7 +28,7 @@ public enum PlayingCardType{
     DJ(10, "DJ"),
     DQ(10, "DQ"),
     DK(10, "DK"),
-    DA(RuleSet.ACE_HIGH_VALUE, "DA"),
+    DA(GameConstants.ACE_HIGH_VALUE, "DA"),
     C2(2, "C2"),
     C3(3, "C3"),
     C4(4, "C4"),
@@ -41,7 +41,7 @@ public enum PlayingCardType{
     CJ(10, "CJ"),
     CQ(10, "CQ"),
     CK(10, "CK"),
-    CA(RuleSet.ACE_HIGH_VALUE, "CA"),
+    CA(GameConstants.ACE_HIGH_VALUE, "CA"),
     S2(2, "S2"),
     S3(3, "S3"),
     S4(4, "S4"),
@@ -54,7 +54,7 @@ public enum PlayingCardType{
     SJ(10, "SJ"),
     SQ(10, "SQ"),
     SK(10, "SK"),
-    SA(RuleSet.ACE_HIGH_VALUE, "SA");
+    SA(GameConstants.ACE_HIGH_VALUE, "SA");
 
     private int value;
     private String shortName;
@@ -69,7 +69,7 @@ public enum PlayingCardType{
     }
 
     public boolean isAce() {
-        return this.value == RuleSet.ACE_HIGH_VALUE;
+        return this.value == GameConstants.ACE_HIGH_VALUE;
     }
 
     public int getValue() {

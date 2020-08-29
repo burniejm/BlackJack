@@ -12,7 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import macyBlackJack.GamePresenter;
 import macyBlackJack.Main;
 import macyBlackJack.model.Player;
-import macyBlackJack.model.RuleSet;
+import macyBlackJack.model.GameConstants;
 import macyBlackJack.view.NoSelectionModel;
 import macyBlackJack.view.playerList.PlayerListCellController;
 
@@ -78,8 +78,8 @@ public class BlackJackTableController {
 
     private void evaluateButtonsEnabled() {
         boolean gameInProgress = presenter.getGameModel().getGameInProgressProperty().get();
-        btnAddPlayer.setDisable(gameInProgress || presenter.getGameModel().getPlayersProperty().size() == RuleSet.MAX_PLAYERS_INCLUDING_DEALER);
-        btnDeal.setDisable(gameInProgress || (presenter.getGameModel().getPlayersProperty().size() < RuleSet.MIN_PLAYERS_INCLUDING_DEALER || !presenter.gameHasPlayablePlayers()));
+        btnAddPlayer.setDisable(gameInProgress || presenter.getGameModel().getPlayersProperty().size() == GameConstants.MAX_PLAYERS_INCLUDING_DEALER);
+        btnDeal.setDisable(gameInProgress || (presenter.getGameModel().getPlayersProperty().size() < GameConstants.MIN_PLAYERS_INCLUDING_DEALER || !presenter.gameHasPlayablePlayers()));
     }
 
     private void updateStatusLabel() {

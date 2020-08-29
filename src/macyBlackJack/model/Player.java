@@ -3,8 +3,8 @@ package macyBlackJack.model;
 public class Player {
 
     private String playerName = "";
-    private int playerBank = RuleSet.STARTING_BANK;
-    private int playerBet = RuleSet.MIN_BET;
+    private int playerBank = GameConstants.STARTING_BANK;
+    private int playerBet = GameConstants.MIN_BET;
     private Hand currentHand;
     private boolean isDealer;
 

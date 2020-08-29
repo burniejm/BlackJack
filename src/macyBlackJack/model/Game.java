@@ -30,8 +30,8 @@ public class Game {
     }
 
     public void resetShoe() {
-        shoe = new Shoe(RuleSet.NUM_DECKS);
-        shuffleShoe(RuleSet.NUM_SHUFFLES);
+        shoe = new Shoe(GameConstants.NUM_DECKS);
+        shuffleShoe(GameConstants.NUM_SHUFFLES);
     }
 
     public void addPlayer(Player player) {

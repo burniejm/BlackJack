@@ -7,7 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import macyBlackJack.GamePresenter;
 import macyBlackJack.model.Player;
-import macyBlackJack.model.RuleSet;
+import macyBlackJack.model.GameConstants;
 import macyBlackJack.view.NoSelectionModel;
 import macyBlackJack.view.cardList.CardListCellController;
 
@@ -177,13 +177,13 @@ public class PlayerListCellController extends ListCell<Player> {
             return;
         }
 
-        if(player.getCurrentHand().getCards().size() < RuleSet.NUM_STARTING_CARDS) {
+        if(player.getCurrentHand().getCards().size() < GameConstants.NUM_STARTING_CARDS) {
             btnHit.setDisable(true);
             btnStand.setDisable(true);
             return;
         }
 
-        if(player.getCurrentHand().getCurrentScoreProperty().get() == RuleSet.BLACKJACK_SCORE) {
+        if(player.getCurrentHand().getCurrentScoreProperty().get() == GameConstants.BLACKJACK_SCORE) {
             btnHit.setDisable(true);
             btnStand.setDisable(false);
         }

@@ -1,6 +1,6 @@
 package macyBlackJack.model;
 
-public class RuleSet {
+public class GameConstants {
 
     public final static int NUM_DECKS = 6;
     public final static int NUM_SHUFFLES = 3;

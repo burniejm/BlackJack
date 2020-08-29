@@ -32,12 +32,12 @@ public class Hand {
     }
 
     public boolean isBlackJack() {
-        return this.cardsProperty.get().size() == RuleSet.BLACKJACK_NUM_CARDS
-                && currentScoreProperty.get() == RuleSet.BLACKJACK_SCORE;
+        return this.cardsProperty.get().size() == GameConstants.BLACKJACK_NUM_CARDS
+                && currentScoreProperty.get() == GameConstants.BLACKJACK_SCORE;
     }
 
     public boolean isBust() {
-        return this.currentScoreProperty.get() > RuleSet.BLACKJACK_SCORE;
+        return this.currentScoreProperty.get() > GameConstants.BLACKJACK_SCORE;
     }
 
     public void calculateScore() {
@@ -47,14 +47,14 @@ public class Hand {
         for(PlayingCard card : cardsProperty.get()) {
             score += card.getValue();
 
-            if(card.getValue() == RuleSet.ACE_HIGH_VALUE) {
+            if(card.getValue() == GameConstants.ACE_HIGH_VALUE) {
                 aceCount++;
             }
         }
 
-        if(score > RuleSet.BLACKJACK_SCORE) {
-            while(aceCount > 0 && score > RuleSet.BLACKJACK_SCORE) {
-                score -= (RuleSet.ACE_HIGH_VALUE - RuleSet.ACE_LOW_VALUE);
+        if(score > GameConstants.BLACKJACK_SCORE) {
+            while(aceCount > 0 && score > GameConstants.BLACKJACK_SCORE) {
+                score -= (GameConstants.ACE_HIGH_VALUE - GameConstants.ACE_LOW_VALUE);
                 aceCount--;
             }
         }

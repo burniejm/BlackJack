@@ -23,7 +23,7 @@ public class GameInteractor {
     }
 
     public void addPlayer() {
-        if(game.getPlayersProperty().size() < RuleSet.MAX_PLAYERS_INCLUDING_DEALER) {
+        if(game.getPlayersProperty().size() < GameConstants.MAX_PLAYERS_INCLUDING_DEALER) {
             String playerName = "Player " + game.getPlayersProperty().size();
             game.addPlayer(new Player(playerName, false));
         }
@@ -53,7 +53,7 @@ public class GameInteractor {
         Player dealer = orderedPlayers.remove(0);
         orderedPlayers.add(dealer);
 
-        for(int i = 0; i < RuleSet.NUM_STARTING_CARDS; i++) {
+        for(int i = 0; i < GameConstants.NUM_STARTING_CARDS; i++) {
             for (Player player : orderedPlayers) {
                 if(player.canAffordToPlay()) {
                     dealCard(player);
@@ -78,14 +78,14 @@ public class GameInteractor {
     }
 
     public void decrementBet(Player player) {
-        if(player.getPlayerBet() > RuleSet.MIN_BET) {
-            player.setPlayerBet(player.getPlayerBet() - RuleSet.BET_INCREMENT);
+        if(player.getPlayerBet() > GameConstants.MIN_BET) {
+            player.setPlayerBet(player.getPlayerBet() - GameConstants.BET_INCREMENT);
         }
     }
 
     public void incrementBet(Player player) {
-        if(player.getPlayerBet() < RuleSet.MAX_BET && player.getPlayerBet() < player.getPlayerBank()) {
-            player.setPlayerBet(player.getPlayerBet() + RuleSet.BET_INCREMENT);
+        if(player.getPlayerBet() < GameConstants.MAX_BET && player.getPlayerBet() < player.getPlayerBank()) {
+            player.setPlayerBet(player.getPlayerBet() + GameConstants.BET_INCREMENT);
         }
     }
 
@@ -151,7 +151,7 @@ public class GameInteractor {
 
     private void performDealersTurn() {
         Player dealer = game.getPlayersProperty().get(0);
-        while(dealer.getCurrentHand().getCurrentScoreProperty().get() < RuleSet.DEALER_STANDS_AT) {
+        while(dealer.getCurrentHand().getCurrentScoreProperty().get() < GameConstants.DEALER_STANDS_AT) {
             dealCard(dealer);
         }
     }
@@ -212,7 +212,7 @@ public class GameInteractor {
             case WIN:
                 if(player.getCurrentHand().isBlackJack()) {
                     //Blackjack pays bet * multiplier
-                    player.setPlayerBank(playerBank + (RuleSet.BLACKJACK_WIN_MULTIPLIER * playerBet));
+                    player.setPlayerBank(playerBank + (GameConstants.BLACKJACK_WIN_MULTIPLIER * playerBet));
                 } else {
                     //Win pays bet
                     player.setPlayerBank(playerBank + playerBet);
@@ -228,8 +228,8 @@ public class GameInteractor {
 
     private void shuffleIfNeeded() {
         int cardsInDeck = PlayingCardType.stream().toArray().length;
-        int cardsInShoe = cardsInDeck * RuleSet.NUM_DECKS;
-        boolean shouldShuffle = game.getShoe().getCards().size() <= cardsInShoe * (RuleSet.REDEAL_THRESHOLD_PERCENTAGE / 100.0);
+        int cardsInShoe = cardsInDeck * GameConstants.NUM_DECKS;
+        boolean shouldShuffle = game.getShoe().getCards().size() <= cardsInShoe * (GameConstants.REDEAL_THRESHOLD_PERCENTAGE / 100.0);
 
         if(shouldShuffle) {
             game.resetShoe();
