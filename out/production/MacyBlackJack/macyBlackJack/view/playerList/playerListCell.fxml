@@ -85,12 +85,15 @@
             </VBox>
             <VBox fx:id="paneHandControls" prefHeight="180.0" prefWidth="114.0" spacing="4.0" style="-fx-padding: 5px;">
                <children>
-                  <Button fx:id="btnHit" mnemonicParsing="false" style="-fx-margin: 5px;" text="Hit" />
-                  <Button fx:id="btnStand" mnemonicParsing="false" text="Stand" />
-                  <Label fx:id="lblHandResult" prefHeight="17.0" prefWidth="199.0" text="Hand Result">
+                  <Button fx:id="btnHit" mnemonicParsing="false" prefWidth="100.0" style="-fx-margin: 5px;" text="Hit" />
+                  <Button fx:id="btnStand" mnemonicParsing="false" prefWidth="100.0" text="Stand" />
+                  <Label fx:id="lblHandResult" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="199.0" text="Hand Result" textAlignment="CENTER">
                      <VBox.margin>
                         <Insets top="28.0" />
-                     </VBox.margin></Label>
+                     </VBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font></Label>
                </children>
             </VBox>
          </children>
