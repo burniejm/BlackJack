@@ -11,6 +11,10 @@ public class GameInteractor {
     public GameInteractor(Game game) {
         this.game = game;
 
+        /*
+            Listen for dealers turn. All other turns require user input. This turn is automatic and ends
+            the current game.
+         */
         game.getCurrentTurnProperty().addListener((observable, oldValue, newValue) -> {
             if(game.getCurrentTurnProperty().get() == 0) {
                 performDealersTurn();
@@ -40,7 +44,7 @@ public class GameInteractor {
     public void dealNewHand() {
         resetPlayersHands();
 
-        Player firstPlayer = firstPlayablePlayer();
+        Player firstPlayer = firstPlayablePlayer(); //first player with money
         if(firstPlayer != null) {
             game.getCurrentTurnProperty().set(game.getPlayersProperty().indexOf(firstPlayer));
         } else {
@@ -53,6 +57,7 @@ public class GameInteractor {
         Player dealer = orderedPlayers.remove(0);
         orderedPlayers.add(dealer);
 
+        //Deal {NUM_STARTING_CARDS} to players (with money) with the dealer last
         for(int i = 0; i < GameConstants.NUM_STARTING_CARDS; i++) {
             for (Player player : orderedPlayers) {
                 if(player.canAffordToPlay()) {
@@ -102,6 +107,9 @@ public class GameInteractor {
         }
     }
 
+    /*
+        Returns the first player who is not the dealer and still has money
+     */
     private Player firstPlayablePlayer() {
         for(Player player : game.getPlayersProperty()) {
             if(player.isDealer()) {
@@ -116,6 +124,9 @@ public class GameInteractor {
         return null;
     }
 
+    /*
+        Player name should match player order skipping the dealer
+     */
     private void renamePlayers() {
         for(int i = 0; i < game.getPlayersProperty().size(); i++) {
             if(i == 0) {
@@ -127,12 +138,18 @@ public class GameInteractor {
         }
     }
 
+    /*
+        Removes all cards from a player's hand
+     */
     private void resetPlayersHands() {
         for(Player player : game.getPlayersProperty()) {
             player.getCurrentHand().reset();
         }
     }
 
+    /*
+        Ensure player can afford their bet
+     */
     private void checkBets() {
         for(Player player : game.getPlayersProperty()) {
             if(player.getPlayerBet() > player.getPlayerBank()) {
@@ -141,14 +158,20 @@ public class GameInteractor {
         }
     }
 
+    /*
+        Removes the next card from the shoe and returns it. Cards are dealt from the top of the shoe
+     */
     private PlayingCard getNextCard() {
         if(this.game.getShoe().getCards().size() == 0) {
             return null;
         }
 
-        return this.game.getShoe().getCards().remove(0);
+        return this.game.getShoe().getCards().remove(this.game.getShoe().getCards().size() - 1);
     }
 
+    /*
+        Deal cards to dealer until they reach or exceed {DEALER_STANDS_AT}
+     */
     private void performDealersTurn() {
         Player dealer = game.getPlayersProperty().get(0);
         while(dealer.getCurrentHand().getCurrentScoreProperty().get() < GameConstants.DEALER_STANDS_AT) {
@@ -170,6 +193,7 @@ public class GameInteractor {
         int playerScore = player.getCurrentHand().getCurrentScoreProperty().get();
         int dealerScore = dealer.getCurrentHand().getCurrentScoreProperty().get();
 
+        //bust always loses
         if(player.getCurrentHand().isBust()) {
             return HandResult.LOSS;
         }
