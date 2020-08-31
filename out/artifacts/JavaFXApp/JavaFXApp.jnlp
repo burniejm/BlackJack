@@ -8,8 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="JavaFXApp.jar" size="16340296" download="eager" />
+    <jar href="JavaFXApp.jar" size="16247783" download="eager" />
   </resources>
-  <jfx:javafx-desc  width="600" height="400" main-class="sample.Main"  name="JavaFXApp" />
+  <jfx:javafx-desc  width="850" height="670" main-class="macyBlackJack.Main"  name="JavaFXApp" />
   <update check="background"/>
 </jnlp>

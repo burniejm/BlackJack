@@ -1,0 +1,20 @@
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.list-cell {
+    -fx-padding: 2px;
+}
+
+.player-list .list-cell {
+	-fx-background-color: transparent;
+}
+
+.cards-list-view .list-cell {
+    -fx-background-color: darkGreen;
+}
+
+#btnIncrementBet {
+    -fx-margin-left: 10px;
+}
