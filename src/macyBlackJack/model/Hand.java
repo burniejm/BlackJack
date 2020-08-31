@@ -9,6 +9,14 @@ import java.util.ArrayList;
 
 public class Hand {
 
+    private final String RESULT_BLACKJACK = "BlackJack !!!!!!";
+    private final String RESULT_PLAYER_WIN = "Winner !!";
+    private final String RESULT_PLAYER_BUST = "Busted !!";
+    private final String RESULT_PLAYER_LOSS = "Lost :(";
+    private final String RESULT_PLAYER_TIE = "Tie :/";
+    private final String RESULT_DEALER_BUST = "Dealer Busts !!!!!";
+
+
     private ListProperty<PlayingCard> cardsProperty = new SimpleListProperty<PlayingCard>(FXCollections.observableList(new ArrayList<>()));
     private IntegerProperty currentScoreProperty = new SimpleIntegerProperty(0);
     private HandResult handResult;
@@ -70,18 +78,18 @@ public class Hand {
         switch (handResult) {
             case WIN:
                 if(isBlackJack()) {
-                    return "BlackJack !!!!!!";
+                    return RESULT_BLACKJACK;
                 } else {
-                    return "Winner !!";
+                    return RESULT_PLAYER_WIN;
                 }
             case LOSS:
                 if(isBust()) {
-                    return "Busted !!";
+                    return RESULT_PLAYER_BUST;
                 } else {
-                    return "Lost :(";
+                    return RESULT_PLAYER_LOSS;
                 }
             case TIE:
-                return "Tie :/";
+                return RESULT_PLAYER_TIE;
         }
 
         return "";
@@ -89,7 +97,11 @@ public class Hand {
 
     public String dealerResultDescription() {
         if(isBust()) {
-            return "Dealer Busts !!!!!";
+            return RESULT_DEALER_BUST;
+        }
+
+        if(isBlackJack()) {
+            return RESULT_BLACKJACK;
         }
 
         return "";
